@@ -1,0 +1,44 @@
+version: "3.8"
+
+include:
+  - movies_db/movies_db.yml
+  - kafka-cluster/kafka-cluster.yml
+networks:
+  admin_movies_service_network:
+    name: "admin_movies_service_net"
+    driver: bridge
+
+services:
+  admin_movies_service:
+    build: ./
+    command: ./bin/app
+    volumes:
+      - ./docker/containers-configs/:/configs
+    ports:
+      - 9080:8080
+    networks:
+      - admin_movies_service_network
+      - movies_db_network
+      - kafka_network
+    environment:
+      DB_PASSWORD: ${DB_PASSWORD}
+    depends_on:
+      movies_pool:
+        condition: service_started
+      kafka:
+        condition: service_healthy
+    healthcheck:
+      test: wget --no-verbose --tries=1 --spider 'http://localhost:7001/healthcheck' || exit 1
+      interval: 40s
+      timeout: 20s
+      retries: 3
+      start_period: 20s
+    deploy:
+      mode: replicated
+      replicas: 1
+      endpoint_mode: dnsrr
+      restart_policy:
+        condition: unless-stopped
+    labels:
+      servicename: "admin_movies_service"
+      org.label-schema.group: "monitoring"

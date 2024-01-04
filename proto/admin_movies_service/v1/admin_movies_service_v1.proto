@@ -1,0 +1,204 @@
+syntax= "proto3";
+
+package admin_movies_service;
+import "admin_movies_service_v1_messages.proto";
+option go_package = "admin_movies_service/v1/protos";
+import "google/api/annotations.proto";
+import "protoc-gen-openapiv2/options/annotations.proto";
+import "google/protobuf/empty.proto";
+
+
+option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
+    schemes: HTTP;
+    //schemes: HTTPS;
+    consumes: "application/json";
+    produces: "application/json";
+
+    info: {
+        title: "Admin movies service";
+        version: "1.0";
+        contact: {
+            name: "Falokut";
+            url: "https://github.com/Falokut";
+            email: "timur.sinelnik@yandex.ru";
+        };
+    }
+    responses: {
+		key: "404";
+		value: {
+			description: "Returned when the resource does not exist.";
+			schema: {
+				json_schema: {
+					ref: "#/definitions/rpcStatus";
+				}
+			}
+		}
+	}
+    responses: {
+		key: "500";
+		value: {
+			description: "Something went wrong.";
+			schema: {
+				json_schema: {
+					ref: "#/definitions/rpcStatus";
+				}
+			}
+		}
+	}
+};
+
+service moviesServiceV1 {
+    rpc GetMovie(GetMovieRequest) returns(Movie) {
+        option (google.api.http) = {
+            get: "/v1/movie"
+        };
+    }
+    
+    rpc GetMovies(GetMoviesRequest) returns(Movies) {
+        option (google.api.http) = {
+            get: "/v1/movies"
+        };
+    }
+
+    rpc CreateMovie(CreateMovieRequest) returns(CreateMovieResponce) {
+        option (google.api.http) = {
+            post: "/v1/movie"
+            body: "*"
+        };
+    }
+
+    rpc DeleteMovie(DeleteMovieRequest) returns(google.protobuf.Empty) {
+        option (google.api.http) = {
+            delete: "/v1/movie"
+        };
+    }
+
+    rpc IsMovieExists(IsMovieExistsRequest) returns(IsMovieExistsResponce) {
+        option (google.api.http) = {
+            get: "/v1/movie/exists"
+        };
+    }
+
+    rpc UpdateMovie(UpdateMovieRequest) returns(google.protobuf.Empty) {
+        option (google.api.http) = {
+            post: "/v1/movie/update"
+            body:"*"
+        };
+    }
+    rpc UpdateMoviePictures(UpdateMoviePicturesRequest) returns(google.protobuf.Empty) {
+        option (google.api.http) = {
+            post: "/v1/movie/update-pictures"
+            body:"*"
+        };
+    }
+
+    rpc GetAgeRatings(google.protobuf.Empty) returns(AgeRatings){
+        option (google.api.http) = {
+            get: "/v1/age-ratings"
+        };
+    }
+
+    rpc CreateAgeRating(CreateAgeRatingRequest) returns(google.protobuf.Empty){
+        option (google.api.http) = {
+            post: "/v1/age-ratings"
+            body: "*"
+        };
+    }
+
+    rpc DeleteAgeRating(DeleteAgeRatingRequest) returns(google.protobuf.Empty){
+        option (google.api.http) = {
+            delete: "/v1/age-ratings"
+        };
+    }
+
+    rpc GetGenre(GetGenreRequest) returns(Genre) {
+        option (google.api.http) = {
+            get: "/v1/genre/{genre_id}"
+        };
+      }
+    
+    rpc GetGenreByName(GetGenreByNameRequest) returns(Genre) {
+        option (google.api.http) = {
+            get: "/v1/genre/search"
+        };
+    }
+      
+    
+    rpc CreateGenre(CreateGenreRequest) returns(CreateGenreResponce) {
+        option (google.api.http) = {
+            post: "/v1/genre"
+            body: "*"
+        };
+    }
+    
+
+    rpc GetGenres(google.protobuf.Empty) returns(Genres) {
+        option (google.api.http) = {
+            get: "/v1/genres"
+        };
+    }
+
+    rpc UpdateGenre(UpdateGenreRequest) returns(google.protobuf.Empty) {
+        option (google.api.http) = {
+            post: "/v1/genre/update"
+            body: "*"
+        };
+    }
+    
+
+    rpc DeleteGenre(DeleteGenreRequest) returns(google.protobuf.Empty) {
+        option (google.api.http) = {
+            delete: "/v1/genre/{genre_id}"
+        };
+    }
+    
+    rpc IsGenresExists(IsGenresExistsRequest) returns(ExistsResponce) {
+        option (google.api.http) = {
+            get: "/v1/genres/exists"
+        };
+    }
+
+    rpc GetCountry(GetCountryRequest) returns(Country) {
+        option (google.api.http) = {
+            get: "/v1/country/{country_id}"
+        };
+      }
+
+    rpc GetCountryByName(GetCountryByNameRequest) returns(Country) {
+        option (google.api.http) = {
+            get: "/v1/country/search"
+        };
+    }
+      
+    rpc CreateCountry(CreateCountryRequest) returns(CreateCountryResponce) {
+        option (google.api.http) = {
+            post: "/v1/country"
+            body: "*"
+        };
+    }
+
+    rpc GetCountries(google.protobuf.Empty) returns(Countries) {
+        option (google.api.http) = {
+            get: "/v1/countries"
+        };
+    }
+
+    rpc UpdateCountry(UpdateCountryRequest) returns(google.protobuf.Empty) {
+        option (google.api.http) = {
+            post: "/v1/country/update"
+            body: "*"
+        };
+    }
+
+    rpc DeleteCountry(DeleteCountryRequest) returns(google.protobuf.Empty) {
+        option (google.api.http) = {
+            delete: "/v1/country/{country_id}"
+        };
+    }
+    
+    rpc IsCountriesExists(IsCountriesExistsRequest) returns(ExistsResponce) {
+        option (google.api.http) = {
+          get: "/v1/countries/exists"
+        };
+    } 
+}

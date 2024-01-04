@@ -1,0 +1,189 @@
+syntax = "proto3";
+
+package admin_movies_service;
+option go_package = "admin_movies_service/v1/protos";
+
+
+message GetMovieRequest { int32 movieID = 1 [ json_name = "movie_id" ]; }
+
+// for multiple values use ',' separator
+message GetMoviesRequest {
+  optional string moviesIDs = 1[json_name="movies_ids"];
+  optional string genresIDs = 2[json_name="genres_ids"];
+  optional string countriesIDs = 3[json_name="country_ids"];
+  optional string title = 4;
+  optional string ageRatings = 5[json_name="age_ratings"];
+  // if limit = 0, will be used default limit = 10, if bigger than 100, will be used max limit = 100
+  uint32 limit = 6;
+  uint32 offset = 7;
+}
+
+message CreateMovieRequest {
+  string description = 1;
+  string shortDescription = 2             [json_name="short_description"];
+  string titleRU = 3                      [json_name="title_ru"];
+  optional string titleEN = 4             [json_name="title_en"];
+  repeated int32 genresIDs = 5            [json_name="genres_ids"];
+  // movie duration in minutes
+  int32 duration = 6;
+  repeated int32 countriesIDs = 7         [json_name="country_ids"];
+  bytes poster = 8;
+  bytes previewPoster = 9                 [json_name = "preview_poster" ];
+  bytes background = 10;
+  int32 releaseYear = 11                  [json_name="release_year"];
+  string ageRating  = 12                  [json_name="age_rating"];
+}
+
+
+
+message UpdateMovieRequest {
+  int32 movieID = 1                               [json_name="movie_id"];
+  optional string description = 2;
+  optional string shortDescription = 3            [json_name="short_description"];
+  optional string titleRU = 4                     [json_name="title_ru"];
+  optional string titleEN = 5                     [json_name="title_en"];
+  repeated int32 genresIDs = 6                    [json_name="genres_ids"];
+  bool updateGenres = 7                           [json_name="update_genres"];
+
+  // movie duration in minutes
+  optional int32 duration = 8;
+  repeated int32 countriesIDs = 9                 [json_name="countries_ids"];
+  bool UpdateCountries = 10                       [json_name="update_countries"];
+  optional int32 releaseYear = 11                 [json_name="release_year"];
+  optional string	ageRating  = 12                 [json_name="age_rating"];
+}
+
+message UpdateMoviePicturesRequest {
+  int32 movieID = 1           [json_name="movie_id"];
+  bytes previewPoster = 2     [json_name = "preview_poster" ];
+  bytes poster = 3;
+  bytes background = 4;
+}
+
+
+message CreateMovieResponce {
+  int32 MovieID = 1[json_name="movie_id"];
+}
+
+message DeleteMovieRequest {
+  int32 MovieID = 1[json_name="movie_id"];
+}
+
+message IsMovieExistsRequest {
+  int32 MovieID = 1[json_name="movie_id"];
+}
+
+message IsMovieExistsResponce  {
+  bool exists = 1;
+}
+
+message CreateAgeRatingRequest {
+  string AgeRatingName = 1[json_name="age_rating_name"];
+}
+message DeleteAgeRatingRequest {
+  string AgeRatingName = 1[json_name="age_rating_name"];
+}
+message IsExistsResponce {
+  bool MovieExists = 1[json_name="movie_exists"];
+}
+
+message Movies {
+  map<int32, Movie> movies = 1;
+}
+
+message AgeRatings {
+  repeated string ratings = 1;
+}
+
+
+message GetGenreRequest {
+  int32 genre_id = 1;
+}
+
+
+message Genre {
+  int32 GenreID = 1[json_name = "genre_id"];
+  string Name = 2[json_name="name"];
+}
+
+message Genres {
+  repeated Genre genres = 1;
+}
+
+
+message CreateGenreRequest {
+  string Name = 1[json_name="name"];
+}
+
+message CreateGenreResponce {
+  int32 GenreID = 1[json_name="genre_id"];
+}
+
+
+message UpdateGenreRequest {
+  int32 GenreID = 1[json_name="genre_id"];
+  string Name = 2[json_name="name"];
+}
+
+message GetGenreByNameRequest {
+  string name = 1;
+}
+
+message DeleteGenreRequest {
+  int32 genre_id = 1;
+}
+
+
+message IsGenresExistsRequest {
+    // use ',' as separator for multiple ids
+    string GenresIDs = 1[json_name="genres_ids"];
+}
+
+message ExistsResponce  {
+  bool exists = 1;
+  repeated int32 NotExistIDs = 2[json_name="not_exists_ids"];
+}
+
+message Movie {
+  string description = 1;
+  string shortDescription = 2             [json_name="short_description"];
+  string titleRU = 3                      [json_name="title_ru"];
+  string titleEN = 4                      [json_name="title_en"];
+  repeated string genres = 5              [json_name="genres"];
+  // movie duration in minutes
+  int32 duration = 6;
+  repeated string countries = 7          [json_name="countries"];
+  string posterURL = 8                    [json_name="poster_url" ];
+  string previewPosterURL = 9             [json_name = "preview_poster_url"];
+  string backgroundURL = 10               [json_name="background_url"];
+  int32 releaseYear = 11                  [json_name="release_year"];
+  string	ageRating  = 12                 [json_name="age_rating"];
+};
+
+message GetCountryRequest {
+  int32 country_id = 1;
+}
+
+message Country {
+  int32 CountryID = 1[json_name = "country_id"];
+  string Name = 2[json_name="name"];
+}
+
+message Countries {
+  repeated Country countries = 1;
+}
+
+message CreateCountryRequest {string Name = 1[json_name="name"];}
+message CreateCountryResponce {int32 CountryID = 1[json_name="country_id"];}
+message GetCountryByNameRequest {string name = 1;}
+message DeleteCountryRequest {int32 country_id = 1;}
+message IsCountriesExistsRequest {
+  // use ',' as separator for multiple ids
+  string CountriesIDs = 1[json_name="countries_ids"];
+}
+message UpdateCountryRequest {
+  int32 CountryID = 1[json_name="country_id"];
+  string Name = 2[json_name="name"];
+}
+
+message UserErrorMessage { string message = 1 [ json_name = "message" ]; }
