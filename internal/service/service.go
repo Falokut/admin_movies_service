@@ -183,21 +183,24 @@ func (s *MoviesService) CreateMovie(ctx context.Context,
 	in *admin_movies_service.CreateMovieRequest) (*admin_movies_service.CreateMovieResponce, error) {
 	span, ctx := opentracing.StartSpanFromContext(ctx, "MoviesService.CreateMovie")
 	defer span.Finish()
+	if err := validateCreateRequest(in); err != nil {
+		return nil, s.errorHandler.createErrorResponceWithSpan(span, ErrInvalidArgument, err.Error())
+	}
 
 	res, err := s.moviesRepo.CreateMovie(ctx, in)
-	switch err {
-	case ErrInvalidArgument, ErrInvalidFilter:
+	if errors.Is(err, ErrInvalidArgument) {
 		return nil, s.errorHandler.createErrorResponceWithSpan(span, ErrInvalidArgument, err.Error())
-	case ErrAlreadyExists:
-		return nil, s.errorHandler.createExtendedErrorResponceWithSpan(span, ErrAlreadyExists, "", err.Error())
-	default:
-		if err != nil {
-			return nil, s.errorHandler.createErrorResponceWithSpan(span, ErrInternal, err.Error())
-		}
-
-		span.SetTag("grpc.status", codes.OK)
-		return res, nil
 	}
+	if errors.Is(err, ErrAlreadyExists) {
+		return nil, s.errorHandler.createExtendedErrorResponceWithSpan(span, ErrAlreadyExists, "", err.Error())
+	}
+	if err != nil {
+		return nil, s.errorHandler.createErrorResponceWithSpan(span, ErrInternal, err.Error())
+	}
+
+	span.SetTag("grpc.status", codes.OK)
+	return res, nil
+
 }
 
 func formatSlice[T any](nums []T) string {

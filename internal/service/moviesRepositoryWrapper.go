@@ -376,10 +376,6 @@ func (s *moviesRepositoryWrapper) CreateMovie(ctx context.Context,
 	defer span.SetTag("error", err != nil)
 
 	s.logger.Info("validating data")
-	if err = validateCreateRequest(in); err != nil {
-		return nil, err
-	}
-
 	ageRating, err := s.moviesRepo.GetAgeRating(ctx, in.AgeRating)
 	if errors.Is(err, repository.ErrNotFound) {
 		ext.LogError(span, err)
