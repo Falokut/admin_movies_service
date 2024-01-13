@@ -59,3 +59,6 @@ background_config:
      allowed_types: ["image/png", "image/jpeg","image/webp","image/pjpeg","image/svg+xml","image/tiff","image/vnd.microsoft.icon","image/vnd.wap.wbmp"]
   resize_image: false
   category: "background"
+
+kafka:
+  brokers: ["kafka:9092"]

@@ -406,7 +406,7 @@ func (s *imagesService) ReplacePictures(ctx context.Context,
 	var images = make(map[string]string, 3)
 	for res := range resCh {
 		if res.err != nil {
-			return map[string]string{}, res.err
+			return images, res.err
 		}
 		if res.id == "" {
 			continue
