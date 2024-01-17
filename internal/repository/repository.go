@@ -113,6 +113,8 @@ type MoviesRepository interface {
 	IsAgeRatingAlreadyExists(ctx context.Context, name string) (bool, error)
 	CreateAgeRating(ctx context.Context, name string) error
 	DeleteAgeRating(ctx context.Context, name string) error
+
+	GetMovieDuration(ctx context.Context, id int32) (uint32, error)
 }
 
 //go:generate mockgen -source=repository.go -destination=mocks/repository.go

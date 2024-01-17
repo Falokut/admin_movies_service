@@ -1,8 +1,10 @@
 package service
 
 import (
+	"context"
 	"errors"
 	"fmt"
+	"strings"
 
 	admin_movies_service "github.com/Falokut/admin_movies_service/pkg/admin_movies_service/v1/protos"
 	"github.com/Falokut/grpc_errors"
@@ -39,17 +41,46 @@ func newErrorHandler(logger *logrus.Logger) errorHandler {
 	}
 }
 
+func IsContextError(msg string) bool {
+	switch msg {
+	case context.Canceled.Error(), context.DeadlineExceeded.Error():
+		return true
+	default:
+		if strings.Contains(msg, "context canceled") {
+			return true
+		}
+
+		if strings.Contains(msg, context.DeadlineExceeded.Error()) {
+			return true
+		}
+
+		return false
+	}
+}
+
 func (e *errorHandler) createErrorResponceWithSpan(span opentracing.Span, err error, developerMessage string) error {
 	if err == nil {
 		return nil
 	}
+	if IsContextError(developerMessage) {
+		err = context.Canceled
+		span.SetTag("grpc.status", codes.Canceled)
+		ext.LogError(span, err)
+	} else {
+		span.SetTag("grpc.status", grpc_errors.GetGrpcCode(err))
+		ext.LogError(span, err)
+	}
 
-	span.SetTag("grpc.status", grpc_errors.GetGrpcCode(err))
-	ext.LogError(span, err)
 	return e.createErrorResponce(err, developerMessage)
 }
 
 func (e *errorHandler) createErrorResponce(err error, developerMessage string) error {
+	if errors.Is(err, context.Canceled) || IsContextError(developerMessage) {
+		err = status.Error(codes.Canceled, developerMessage)
+		e.logger.Error(err)
+		return err
+	}
+
 	var msg string
 	if len(developerMessage) == 0 {
 		msg = err.Error()
@@ -67,13 +98,25 @@ func (e *errorHandler) createExtendedErrorResponceWithSpan(span opentracing.Span
 	if err == nil {
 		return nil
 	}
+	if IsContextError(developerMessage) {
+		err = context.Canceled
+		span.SetTag("grpc.status", codes.Canceled)
+		ext.LogError(span, err)
+	} else {
+		span.SetTag("grpc.status", grpc_errors.GetGrpcCode(err))
+		ext.LogError(span, err)
+	}
 
-	span.SetTag("grpc.status", grpc_errors.GetGrpcCode(err))
-	ext.LogError(span, err)
 	return e.createExtendedErrorResponce(err, developerMessage, userMessage)
 }
 
 func (e *errorHandler) createExtendedErrorResponce(err error, developerMessage, userMessage string) error {
+	if errors.Is(err, context.Canceled) || IsContextError(developerMessage) {
+		err = status.Error(codes.Canceled, developerMessage)
+		e.logger.Error(err)
+		return err
+	}
+
 	var msg string
 	if developerMessage != "" {
 		msg = fmt.Sprintf("%s. error: %v", developerMessage, err)

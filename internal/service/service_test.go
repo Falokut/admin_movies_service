@@ -140,10 +140,10 @@ func TestGetMovie(t *testing.T) {
 			behavior: func(m *mock_service.MockMoviesRepository, in *admin_movies_service.GetMovieRequest, out *admin_movies_service.Movie) {
 				m.EXPECT().GetMovie(gomock.Any(), gomock.Any()).Return(out, context.Canceled).Times(1)
 			},
-			expectedStatus:   codes.Internal,
-			expectedError:    service.ErrInternal,
+			expectedStatus:   codes.Canceled,
+			expectedError:    context.Canceled,
 			expectedResponce: nil,
-			msg:              "Test case num %d, must return internal error, if repo return error != ErrNotFound",
+			msg:              "Test case num %d, must return context error, if repo return context error",
 		},
 		{
 			movieID: 10,
@@ -256,10 +256,10 @@ func TestGetMovies(t *testing.T) {
 			behavior: func(m *mock_service.MockMoviesRepository, in *admin_movies_service.GetMoviesRequest, expectedResponce *admin_movies_service.Movies) {
 				m.EXPECT().GetMovies(gomock.Any(), gomock.Any()).Return(expectedResponce, context.Canceled).Times(1)
 			},
-			expectedStatus:   codes.Internal,
-			expectedError:    service.ErrInternal,
+			expectedStatus:   codes.Canceled,
+			expectedError:    context.Canceled,
 			expectedResponce: nil,
-			msg:              "Test case num %d, must return internal error, if repo return error != ErrNotFound",
+			msg:              "Test case num %d, must return context error, if repo return context error",
 		},
 		{
 			request: MoviesRequest{

@@ -53,7 +53,13 @@ service moviesServiceV1 {
             get: "/v1/movie"
         };
     }
-    
+
+    rpc GetMovieDuration(GetMovieDurationRequest) returns(MovieDuration) {
+        option (google.api.http) = {
+            get: "/v1/movie/duration"
+        };
+    }
+
     rpc GetMovies(GetMoviesRequest) returns(Movies) {
         option (google.api.http) = {
             get: "/v1/movies"

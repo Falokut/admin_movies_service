@@ -855,6 +855,49 @@
         ]
       }
     },
+    "/v1/movie/duration": {
+      "get": {
+        "operationId": "moviesServiceV1_GetMovieDuration",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/admin_movies_serviceMovieDuration"
+            }
+          },
+          "404": {
+            "description": "Returned when the resource does not exist.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          },
+          "500": {
+            "description": "Something went wrong.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "movie_id",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          }
+        ],
+        "tags": [
+          "moviesServiceV1"
+        ]
+      }
+    },
     "/v1/movie/exists": {
       "get": {
         "operationId": "moviesServiceV1_IsMovieExists",
@@ -1306,6 +1349,15 @@
         },
         "age_rating": {
           "type": "string"
+        }
+      }
+    },
+    "admin_movies_serviceMovieDuration": {
+      "type": "object",
+      "properties": {
+        "duration": {
+          "type": "integer",
+          "format": "int64"
         }
       }
     },

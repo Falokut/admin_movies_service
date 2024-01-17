@@ -34,6 +34,7 @@ type MoviesRepository interface {
 	UpdateMoviePictures(ctx context.Context, in *admin_movies_service.UpdateMoviePicturesRequest) error
 	UpdateMovie(ctx context.Context, in *admin_movies_service.UpdateMovieRequest) error
 	DeleteMovie(ctx context.Context, in *admin_movies_service.DeleteMovieRequest) error
+	GetMovieDuration(ctx context.Context, id int32) (uint32, error)
 }
 
 //go:generate mockgen -source=service.go -destination=mocks/service.go
@@ -109,6 +110,24 @@ func (s *MoviesService) GetMovie(ctx context.Context, in *admin_movies_service.G
 		}
 		span.SetTag("grpc.status", codes.OK)
 		return movie, nil
+	}
+}
+
+func (s *MoviesService) GetMovieDuration(ctx context.Context,
+	in *admin_movies_service.GetMovieDurationRequest) (*admin_movies_service.MovieDuration, error) {
+	span, ctx := opentracing.StartSpanFromContext(ctx, "MoviesService.GetMovieDuration")
+	defer span.Finish()
+
+	duration, err := s.moviesRepo.GetMovieDuration(ctx, in.MovieID)
+	switch err {
+	case ErrNotFound:
+		return nil, s.errorHandler.createErrorResponceWithSpan(span, ErrNotFound, "")
+	default:
+		if err != nil {
+			return nil, s.errorHandler.createErrorResponceWithSpan(span, ErrInternal, err.Error())
+		}
+		span.SetTag("grpc.status", codes.OK)
+		return &admin_movies_service.MovieDuration{Duration: duration}, nil
 	}
 }
 

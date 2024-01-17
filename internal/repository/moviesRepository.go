@@ -60,6 +60,25 @@ func (r *moviesRepository) GetMovie(ctx context.Context, movieID int32) (Movie, 
 	return movie, nil
 }
 
+func (r *moviesRepository) GetMovieDuration(ctx context.Context, movieID int32) (uint32, error) {
+	span, ctx := opentracing.StartSpanFromContext(ctx, "moviesRepository.GetMovieDuration")
+	defer span.Finish()
+	var err error
+	defer span.SetTag("error", err != nil)
+
+	query := fmt.Sprintf("SELECT duration FROM %s WHERE id=$1", moviesTableName)
+	var duration uint32
+	err = r.db.GetContext(ctx, &duration, query, movieID)
+	if errors.Is(err, sql.ErrNoRows) {
+		return 0, ErrNotFound
+	}
+	if err != nil {
+		r.logger.Errorf("%v query: %s args: movie_id: %d", err.Error(), query, movieID)
+		return 0, err
+	}
+
+	return duration, nil
+}
 func (r *moviesRepository) GetMovies(ctx context.Context, filter MoviesFilter, limit, offset uint32) ([]Movie, error) {
 	span, ctx := opentracing.StartSpanFromContext(ctx, "moviesRepository.GetMovies")
 	defer span.Finish()
@@ -67,9 +86,11 @@ func (r *moviesRepository) GetMovies(ctx context.Context, filter MoviesFilter, l
 	var err error
 	defer span.SetTag("error", err != nil)
 
-	query := fmt.Sprintf("SELECT %[1]s.id, %[2]s, COALESCE(%[3]s.name,'') AS age_rating "+
-		"FROM %[1]s LEFT JOIN %[3]s ON age_rating_id=%[3]s.id %[4]s "+
-		"ORDER BY id LIMIT %d OFFSET %d",
+	query := fmt.Sprintf(`SELECT %[1]s.id, %[2]s, COALESCE(%[3]s.name,'') AS age_rating 
+		FROM %[1]s LEFT JOIN %[3]s ON age_rating_id=%[3]s.id
+		%[4]s 
+		ORDER BY id
+		LIMIT %d OFFSET %d`,
 		moviesTableName, movieFields, ageRatingsTableName, convertFilterToWhere(filter), limit, offset)
 	var movies []Movie
 	err = r.db.SelectContext(ctx, &movies, query)
@@ -641,8 +662,8 @@ func (r *moviesRepository) GetPicturesIds(ctx context.Context, id int32) (poster
 	defer span.Finish()
 	defer span.SetTag("error", err != nil)
 
-	query := fmt.Sprintf("SELECT poster_picture_id,"+
-		"preview_poster_picture_id,background_picture_id FROM %s WHERE id=$1", moviesTableName)
+	query := fmt.Sprintf(`SELECT poster_picture_id, preview_poster_picture_id,background_picture_id 
+		FROM %s WHERE id=$1`, moviesTableName)
 	var movie moviePictures
 	err = r.db.GetContext(ctx, &movie, query, id)
 	if errors.Is(err, sql.ErrNoRows) {

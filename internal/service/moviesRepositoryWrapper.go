@@ -368,6 +368,24 @@ func convertProtoToCreateMovieParam(in *admin_movies_service.CreateMovieRequest,
 	}
 }
 
+func (s *moviesRepositoryWrapper) GetMovieDuration(ctx context.Context, id int32) (uint32, error) {
+	span, ctx := opentracing.StartSpanFromContext(ctx,
+		"moviesRepositoryWrapper.CreateMovie")
+	defer span.Finish()
+	var err error
+	defer span.SetTag("error", err != nil)
+
+	duration, err := s.moviesRepo.GetMovieDuration(ctx, id)
+	if errors.Is(err, repository.ErrNotFound) {
+		return 0, fmt.Errorf("movie with this id not found.%w", ErrNotFound)
+	}
+	if err != nil {
+		return 0, err
+	}
+
+	return duration, nil
+}
+
 func (s *moviesRepositoryWrapper) CreateMovie(ctx context.Context,
 	in *admin_movies_service.CreateMovieRequest) (*admin_movies_service.CreateMovieResponce, error) {
 	span, ctx := opentracing.StartSpanFromContext(ctx, "moviesRepositoryWrapper.CreateMovie")

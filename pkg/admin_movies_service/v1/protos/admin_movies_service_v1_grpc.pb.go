@@ -24,6 +24,7 @@ const _ = grpc.SupportPackageIsVersion7
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type MoviesServiceV1Client interface {
 	GetMovie(ctx context.Context, in *GetMovieRequest, opts ...grpc.CallOption) (*Movie, error)
+	GetMovieDuration(ctx context.Context, in *GetMovieDurationRequest, opts ...grpc.CallOption) (*MovieDuration, error)
 	GetMovies(ctx context.Context, in *GetMoviesRequest, opts ...grpc.CallOption) (*Movies, error)
 	CreateMovie(ctx context.Context, in *CreateMovieRequest, opts ...grpc.CallOption) (*CreateMovieResponce, error)
 	DeleteMovie(ctx context.Context, in *DeleteMovieRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
@@ -60,6 +61,15 @@ func NewMoviesServiceV1Client(cc grpc.ClientConnInterface) MoviesServiceV1Client
 func (c *moviesServiceV1Client) GetMovie(ctx context.Context, in *GetMovieRequest, opts ...grpc.CallOption) (*Movie, error) {
 	out := new(Movie)
 	err := c.cc.Invoke(ctx, "/admin_movies_service.moviesServiceV1/GetMovie", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *moviesServiceV1Client) GetMovieDuration(ctx context.Context, in *GetMovieDurationRequest, opts ...grpc.CallOption) (*MovieDuration, error) {
+	out := new(MovieDuration)
+	err := c.cc.Invoke(ctx, "/admin_movies_service.moviesServiceV1/GetMovieDuration", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -278,6 +288,7 @@ func (c *moviesServiceV1Client) IsCountriesExists(ctx context.Context, in *IsCou
 // for forward compatibility
 type MoviesServiceV1Server interface {
 	GetMovie(context.Context, *GetMovieRequest) (*Movie, error)
+	GetMovieDuration(context.Context, *GetMovieDurationRequest) (*MovieDuration, error)
 	GetMovies(context.Context, *GetMoviesRequest) (*Movies, error)
 	CreateMovie(context.Context, *CreateMovieRequest) (*CreateMovieResponce, error)
 	DeleteMovie(context.Context, *DeleteMovieRequest) (*emptypb.Empty, error)
@@ -310,6 +321,9 @@ type UnimplementedMoviesServiceV1Server struct {
 
 func (UnimplementedMoviesServiceV1Server) GetMovie(context.Context, *GetMovieRequest) (*Movie, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetMovie not implemented")
+}
+func (UnimplementedMoviesServiceV1Server) GetMovieDuration(context.Context, *GetMovieDurationRequest) (*MovieDuration, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetMovieDuration not implemented")
 }
 func (UnimplementedMoviesServiceV1Server) GetMovies(context.Context, *GetMoviesRequest) (*Movies, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetMovies not implemented")
@@ -407,6 +421,24 @@ func _MoviesServiceV1_GetMovie_Handler(srv interface{}, ctx context.Context, dec
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(MoviesServiceV1Server).GetMovie(ctx, req.(*GetMovieRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _MoviesServiceV1_GetMovieDuration_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetMovieDurationRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MoviesServiceV1Server).GetMovieDuration(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/admin_movies_service.moviesServiceV1/GetMovieDuration",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MoviesServiceV1Server).GetMovieDuration(ctx, req.(*GetMovieDurationRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -835,6 +867,10 @@ var MoviesServiceV1_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetMovie",
 			Handler:    _MoviesServiceV1_GetMovie_Handler,
+		},
+		{
+			MethodName: "GetMovieDuration",
+			Handler:    _MoviesServiceV1_GetMovieDuration_Handler,
 		},
 		{
 			MethodName: "GetMovies",

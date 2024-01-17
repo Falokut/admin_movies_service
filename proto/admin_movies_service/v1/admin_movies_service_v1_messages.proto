@@ -5,6 +5,8 @@ option go_package = "admin_movies_service/v1/protos";
 
 
 message GetMovieRequest { int32 movieID = 1 [ json_name = "movie_id" ]; }
+message GetMovieDurationRequest { int32 movieID = 1 [ json_name = "movie_id" ]; }
+message MovieDuration {uint32 duration = 1;}
 
 // for multiple values use ',' separator
 message GetMoviesRequest {
