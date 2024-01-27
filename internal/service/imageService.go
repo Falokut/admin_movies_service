@@ -2,7 +2,6 @@ package service
 
 import (
 	"context"
-	"net/url"
 	"sync"
 
 	"github.com/Falokut/admin_movies_service/internal/events"
@@ -223,17 +222,7 @@ func (s *imagesService) GetPictureURL(pictureID, category string) string {
 		return ""
 	}
 
-	u, err := url.Parse(s.basePhotoUrl)
-	if err != nil {
-		s.logger.Errorf("can't parse url. error: %s", err.Error())
-		return ""
-	}
-
-	q := u.Query()
-	q.Add("image_id", pictureID)
-	q.Add("category", category)
-	u.RawQuery = q.Encode()
-	return u.String()
+	return s.basePhotoUrl + "/" + category + "/" + pictureID
 }
 
 func (s *imagesService) UploadPictures(ctx context.Context,
