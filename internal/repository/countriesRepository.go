@@ -56,7 +56,7 @@ func (r *countriesRepository) GetCountryByName(ctx context.Context, name string)
 	var err error
 	defer span.SetTag("error", err != nil)
 
-	query := fmt.Sprintf("SELECT * FROM %s WHERE name_ru=$1 OR name_en=$1", countriesTableName)
+	query := fmt.Sprintf("SELECT * FROM %s WHERE name=$1", countriesTableName)
 
 	var country Country
 	err = r.db.GetContext(ctx, &country, query, name)
