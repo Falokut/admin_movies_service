@@ -68,11 +68,11 @@ message CreateMovieResponce {
 }
 
 message DeleteMovieRequest {
-  int32 MovieID = 1[json_name="movie_id"];
+  int32 movieID = 1[json_name="movie_id"];
 }
 
 message IsMovieExistsRequest {
-  int32 MovieID = 1[json_name="movie_id"];
+  int32 movieID = 1[json_name="movie_id"];
 }
 
 message IsMovieExistsResponce  {
@@ -184,8 +184,18 @@ message IsCountriesExistsRequest {
   string CountriesIDs = 1[json_name="countries_ids"];
 }
 message UpdateCountryRequest {
-  int32 CountryID = 1[json_name="country_id"];
+  int32 countryID = 1[json_name="country_id"];
   string Name = 2[json_name="name"];
 }
 
 message UserErrorMessage { string message = 1 [ json_name = "message" ]; }
+
+message GetMoviesDurationRequest {
+  // for multiple values use ',' as separator
+  string moviesIDs = 1[json_name="movies_ids"];
+}
+
+message MoviesDuration {
+  // key - movie id, value - duration
+  map<int32,uint32> durations = 1;
+}

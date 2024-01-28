@@ -115,6 +115,7 @@ type MoviesRepository interface {
 	DeleteAgeRating(ctx context.Context, name string) error
 
 	GetMovieDuration(ctx context.Context, id int32) (uint32, error)
+	GetMoviesDuration(ctx context.Context, ids []int32) (map[int32]uint32, error)
 }
 
 //go:generate mockgen -source=repository.go -destination=mocks/repository.go

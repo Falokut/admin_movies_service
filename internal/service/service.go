@@ -35,6 +35,7 @@ type MoviesRepository interface {
 	UpdateMovie(ctx context.Context, in *admin_movies_service.UpdateMovieRequest) error
 	DeleteMovie(ctx context.Context, in *admin_movies_service.DeleteMovieRequest) error
 	GetMovieDuration(ctx context.Context, id int32) (uint32, error)
+	GetMoviesDuration(ctx context.Context, ids []int32) (map[int32]uint32, error)
 }
 
 //go:generate mockgen -source=service.go -destination=mocks/service.go
@@ -129,6 +130,33 @@ func (s *MoviesService) GetMovieDuration(ctx context.Context,
 		span.SetTag("grpc.status", codes.OK)
 		return &admin_movies_service.MovieDuration{Duration: duration}, nil
 	}
+}
+
+func (s *MoviesService) GetMoviesDuration(ctx context.Context,
+	in *admin_movies_service.GetMoviesDurationRequest) (*admin_movies_service.MoviesDuration, error) {
+	span, ctx := opentracing.StartSpanFromContext(ctx, "MoviesService.GetMoviesDuration")
+	defer span.Finish()
+
+	in.MoviesIDs = strings.ReplaceAll(in.MoviesIDs, `"`, "")
+	if in.MoviesIDs == "" {
+		return nil, s.errorHandler.createErrorResponceWithSpan(span, ErrInvalidArgument, "movies_ids mustn't be empty")
+	} else if err := checkParam(in.MoviesIDs); err != nil {
+		return nil, s.errorHandler.createErrorResponceWithSpan(span, ErrInvalidArgument, err.Error())
+	}
+
+	ids := convertStringsSlice(strings.Split(in.MoviesIDs, ","))
+
+	durations, err := s.moviesRepo.GetMoviesDuration(ctx, ids)
+
+	if err != nil {
+		return nil, s.errorHandler.createErrorResponceWithSpan(span, ErrInternal, err.Error())
+	}
+	if len(durations) == 0 {
+		return nil, s.errorHandler.createErrorResponceWithSpan(span, ErrNotFound, "")
+	}
+	span.SetTag("grpc.status", codes.OK)
+	return &admin_movies_service.MoviesDuration{Durations: durations}, nil
+
 }
 
 func (s *MoviesService) GetAgeRatings(ctx context.Context, in *emptypb.Empty) (*admin_movies_service.AgeRatings, error) {

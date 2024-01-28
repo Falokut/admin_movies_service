@@ -385,7 +385,19 @@ func (s *moviesRepositoryWrapper) GetMovieDuration(ctx context.Context, id int32
 
 	return duration, nil
 }
+func (s *moviesRepositoryWrapper) GetMoviesDuration(ctx context.Context, ids []int32) (map[int32]uint32, error) {
+	span, ctx := opentracing.StartSpanFromContext(ctx,
+		"moviesRepositoryWrapper.GetMoviesDuration")
+	defer span.Finish()
+	var err error
+	defer span.SetTag("error", err != nil)
 
+	durations, err := s.moviesRepo.GetMoviesDuration(ctx, ids)
+	if err != nil {
+		return map[int32]uint32{}, err
+	}
+	return durations, nil
+}
 func (s *moviesRepositoryWrapper) CreateMovie(ctx context.Context,
 	in *admin_movies_service.CreateMovieRequest) (*admin_movies_service.CreateMovieResponce, error) {
 	span, ctx := opentracing.StartSpanFromContext(ctx, "moviesRepositoryWrapper.CreateMovie")

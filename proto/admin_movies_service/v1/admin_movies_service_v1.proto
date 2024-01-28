@@ -48,24 +48,35 @@ option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
 };
 
 service moviesServiceV1 {
+    // Returns movie with the specified id.
     rpc GetMovie(GetMovieRequest) returns(Movie) {
         option (google.api.http) = {
             get: "/v1/movie"
         };
     }
 
+    // Returns movie duration for the movie with specified id.
     rpc GetMovieDuration(GetMovieDurationRequest) returns(MovieDuration) {
         option (google.api.http) = {
             get: "/v1/movie/duration"
         };
     }
 
+    // Returns movies with the specified ids.
     rpc GetMovies(GetMoviesRequest) returns(Movies) {
         option (google.api.http) = {
             get: "/v1/movies"
         };
     }
 
+    // Returns movies durations with the specified ids.
+    rpc GetMoviesDuration(GetMoviesDurationRequest) returns(MoviesDuration) {
+        option (google.api.http) = {
+            get: "/v1/movies/duration"
+        };
+    }
+
+    // Create movie, returns created movie id.
     rpc CreateMovie(CreateMovieRequest) returns(CreateMovieResponce) {
         option (google.api.http) = {
             post: "/v1/movie"
@@ -73,27 +84,30 @@ service moviesServiceV1 {
         };
     }
 
+    // Delete movie with the specified ids.
     rpc DeleteMovie(DeleteMovieRequest) returns(google.protobuf.Empty) {
         option (google.api.http) = {
-            delete: "/v1/movie"
+            delete: "/v1/movie/{movieID}"
         };
     }
 
+    // Check movie existance, returns false, if movie doesn't exist
     rpc IsMovieExists(IsMovieExistsRequest) returns(IsMovieExistsResponce) {
         option (google.api.http) = {
-            get: "/v1/movie/exists"
+            get: "/v1/movie/{movieID}/exists"
         };
     }
 
     rpc UpdateMovie(UpdateMovieRequest) returns(google.protobuf.Empty) {
         option (google.api.http) = {
-            post: "/v1/movie/update"
+            post: "/v1/movie/{movieID}"
             body:"*"
         };
     }
+    
     rpc UpdateMoviePictures(UpdateMoviePicturesRequest) returns(google.protobuf.Empty) {
         option (google.api.http) = {
-            post: "/v1/movie/update-pictures"
+            post: "/v1/movie/{movieID}/update-pictures"
             body:"*"
         };
     }
@@ -113,7 +127,7 @@ service moviesServiceV1 {
 
     rpc DeleteAgeRating(DeleteAgeRatingRequest) returns(google.protobuf.Empty){
         option (google.api.http) = {
-            delete: "/v1/age-ratings"
+            delete: "/v1/age-ratings/{AgeRatingName}"
         };
     }
 
@@ -125,7 +139,7 @@ service moviesServiceV1 {
     
     rpc GetGenreByName(GetGenreByNameRequest) returns(Genre) {
         option (google.api.http) = {
-            get: "/v1/genre/search"
+            get: "/v1/genre"
         };
     }
       
@@ -191,7 +205,7 @@ service moviesServiceV1 {
 
     rpc UpdateCountry(UpdateCountryRequest) returns(google.protobuf.Empty) {
         option (google.api.http) = {
-            post: "/v1/country/update"
+            post: "/v1/country/{countryID}"
             body: "*"
         };
     }

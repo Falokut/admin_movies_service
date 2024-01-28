@@ -153,6 +153,21 @@ func (mr *MockMoviesRepositoryMockRecorder) GetMovies(ctx, in interface{}) *gomo
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetMovies", reflect.TypeOf((*MockMoviesRepository)(nil).GetMovies), ctx, in)
 }
 
+// GetMoviesDuration mocks base method.
+func (m *MockMoviesRepository) GetMoviesDuration(ctx context.Context, ids []int32) (map[int32]uint32, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetMoviesDuration", ctx, ids)
+	ret0, _ := ret[0].(map[int32]uint32)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetMoviesDuration indicates an expected call of GetMoviesDuration.
+func (mr *MockMoviesRepositoryMockRecorder) GetMoviesDuration(ctx, ids interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetMoviesDuration", reflect.TypeOf((*MockMoviesRepository)(nil).GetMoviesDuration), ctx, ids)
+}
+
 // IsMovieExists mocks base method.
 func (m *MockMoviesRepository) IsMovieExists(ctx context.Context, in *protos.IsMovieExistsRequest) (*protos.IsMovieExistsResponce, error) {
 	m.ctrl.T.Helper()

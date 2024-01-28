@@ -79,6 +79,33 @@ func (r *moviesRepository) GetMovieDuration(ctx context.Context, movieID int32) 
 
 	return duration, nil
 }
+func (r *moviesRepository) GetMoviesDuration(ctx context.Context, ids []int32) (map[int32]uint32, error) {
+	span, ctx := opentracing.StartSpanFromContext(ctx, "moviesRepository.GetMoviesDuration")
+	defer span.Finish()
+	var err error
+	defer span.SetTag("error", err != nil)
+
+	query := fmt.Sprintf("SELECT id,duration FROM %s WHERE id=ANY($1)", moviesTableName)
+	rows, err := r.db.QueryContext(ctx, query, ids)
+	if err != nil {
+		r.logger.Errorf("%v query: %s args: movies_ids: %d", err.Error(), query, ids)
+		return map[int32]uint32{}, err
+	}
+
+	durations := make(map[int32]uint32, len(ids))
+	var id int32
+	var duration uint32
+
+	for rows.Next() {
+		if err := rows.Scan(&id, &duration); err != nil {
+			r.logger.Errorf("%v query: %s args: movies_ids: %d", err.Error(), query, ids)
+			return map[int32]uint32{}, err
+		}
+		durations[id] = duration
+	}
+	return durations, nil
+}
+
 func (r *moviesRepository) GetMovies(ctx context.Context, filter MoviesFilter, limit, offset uint32) ([]Movie, error) {
 	span, ctx := opentracing.StartSpanFromContext(ctx, "moviesRepository.GetMovies")
 	defer span.Finish()
