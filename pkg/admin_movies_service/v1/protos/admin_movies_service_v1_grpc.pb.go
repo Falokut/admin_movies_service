@@ -35,26 +35,45 @@ type MoviesServiceV1Client interface {
 	CreateMovie(ctx context.Context, in *CreateMovieRequest, opts ...grpc.CallOption) (*CreateMovieResponce, error)
 	// Delete movie with the specified ids.
 	DeleteMovie(ctx context.Context, in *DeleteMovieRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
-	// Check movie existance, returns false, if movie doesn't exist
+	// Check movie existance, returns false, if movie doesn't exist.
 	IsMovieExists(ctx context.Context, in *IsMovieExistsRequest, opts ...grpc.CallOption) (*IsMovieExistsResponce, error)
+	// Update movie fields.
 	UpdateMovie(ctx context.Context, in *UpdateMovieRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	// Update movie pictures.
 	UpdateMoviePictures(ctx context.Context, in *UpdateMoviePicturesRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	// Returns all age ratings.
 	GetAgeRatings(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*AgeRatings, error)
+	// Create age rating.
 	CreateAgeRating(ctx context.Context, in *CreateAgeRatingRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	// Delete age rating.
 	DeleteAgeRating(ctx context.Context, in *DeleteAgeRatingRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	// Returns genre with specified id.
 	GetGenre(ctx context.Context, in *GetGenreRequest, opts ...grpc.CallOption) (*Genre, error)
+	// Returns genre with specified name.
 	GetGenreByName(ctx context.Context, in *GetGenreByNameRequest, opts ...grpc.CallOption) (*Genre, error)
+	// Create genre.
 	CreateGenre(ctx context.Context, in *CreateGenreRequest, opts ...grpc.CallOption) (*CreateGenreResponce, error)
+	// Returns all genres.
 	GetGenres(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*Genres, error)
+	// Update genre with specified id.
 	UpdateGenre(ctx context.Context, in *UpdateGenreRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	// Delete genre with specified id.
 	DeleteGenre(ctx context.Context, in *DeleteGenreRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	// Check genres existance, returns false and not exists ids, if any genre in request doesn't exist.
 	IsGenresExists(ctx context.Context, in *IsGenresExistsRequest, opts ...grpc.CallOption) (*ExistsResponce, error)
+	// Returns county with specified id.
 	GetCountry(ctx context.Context, in *GetCountryRequest, opts ...grpc.CallOption) (*Country, error)
+	// Returns country with specified name.
 	GetCountryByName(ctx context.Context, in *GetCountryByNameRequest, opts ...grpc.CallOption) (*Country, error)
+	// Create country.
 	CreateCountry(ctx context.Context, in *CreateCountryRequest, opts ...grpc.CallOption) (*CreateCountryResponce, error)
+	// Returns all countries.
 	GetCountries(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*Countries, error)
+	// Update country with specified id.
 	UpdateCountry(ctx context.Context, in *UpdateCountryRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	// Delete country with specified id.
 	DeleteCountry(ctx context.Context, in *DeleteCountryRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	// Check countries existance, returns false and not exists ids, if any country in request doesn't exist.
 	IsCountriesExists(ctx context.Context, in *IsCountriesExistsRequest, opts ...grpc.CallOption) (*ExistsResponce, error)
 }
 
@@ -316,26 +335,45 @@ type MoviesServiceV1Server interface {
 	CreateMovie(context.Context, *CreateMovieRequest) (*CreateMovieResponce, error)
 	// Delete movie with the specified ids.
 	DeleteMovie(context.Context, *DeleteMovieRequest) (*emptypb.Empty, error)
-	// Check movie existance, returns false, if movie doesn't exist
+	// Check movie existance, returns false, if movie doesn't exist.
 	IsMovieExists(context.Context, *IsMovieExistsRequest) (*IsMovieExistsResponce, error)
+	// Update movie fields.
 	UpdateMovie(context.Context, *UpdateMovieRequest) (*emptypb.Empty, error)
+	// Update movie pictures.
 	UpdateMoviePictures(context.Context, *UpdateMoviePicturesRequest) (*emptypb.Empty, error)
+	// Returns all age ratings.
 	GetAgeRatings(context.Context, *emptypb.Empty) (*AgeRatings, error)
+	// Create age rating.
 	CreateAgeRating(context.Context, *CreateAgeRatingRequest) (*emptypb.Empty, error)
+	// Delete age rating.
 	DeleteAgeRating(context.Context, *DeleteAgeRatingRequest) (*emptypb.Empty, error)
+	// Returns genre with specified id.
 	GetGenre(context.Context, *GetGenreRequest) (*Genre, error)
+	// Returns genre with specified name.
 	GetGenreByName(context.Context, *GetGenreByNameRequest) (*Genre, error)
+	// Create genre.
 	CreateGenre(context.Context, *CreateGenreRequest) (*CreateGenreResponce, error)
+	// Returns all genres.
 	GetGenres(context.Context, *emptypb.Empty) (*Genres, error)
+	// Update genre with specified id.
 	UpdateGenre(context.Context, *UpdateGenreRequest) (*emptypb.Empty, error)
+	// Delete genre with specified id.
 	DeleteGenre(context.Context, *DeleteGenreRequest) (*emptypb.Empty, error)
+	// Check genres existance, returns false and not exists ids, if any genre in request doesn't exist.
 	IsGenresExists(context.Context, *IsGenresExistsRequest) (*ExistsResponce, error)
+	// Returns county with specified id.
 	GetCountry(context.Context, *GetCountryRequest) (*Country, error)
+	// Returns country with specified name.
 	GetCountryByName(context.Context, *GetCountryByNameRequest) (*Country, error)
+	// Create country.
 	CreateCountry(context.Context, *CreateCountryRequest) (*CreateCountryResponce, error)
+	// Returns all countries.
 	GetCountries(context.Context, *emptypb.Empty) (*Countries, error)
+	// Update country with specified id.
 	UpdateCountry(context.Context, *UpdateCountryRequest) (*emptypb.Empty, error)
+	// Delete country with specified id.
 	DeleteCountry(context.Context, *DeleteCountryRequest) (*emptypb.Empty, error)
+	// Check countries existance, returns false and not exists ids, if any country in request doesn't exist.
 	IsCountriesExists(context.Context, *IsCountriesExistsRequest) (*ExistsResponce, error)
 	mustEmbedUnimplementedMoviesServiceV1Server()
 }

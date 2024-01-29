@@ -42,7 +42,8 @@ func main() {
 
 	tracer, closer, err := jaegerTracer.InitJaeger(appCfg.JaegerConfig)
 	if err != nil {
-		logger.Fatal("cannot create tracer", err)
+		logger.Errorf("Shutting down, error while creating tracer %v", err)
+		return
 	}
 	logger.Info("Jaeger connected")
 	defer closer.Close()
@@ -52,13 +53,15 @@ func main() {
 	logger.Info("Metrics initializing")
 	metric, err := metrics.CreateMetrics(appCfg.PrometheusConfig.Name)
 	if err != nil {
-		logger.Fatal(err)
+		logger.Errorf("Shutting down, error while creating metrics %v", err)
+		return
 	}
 
 	go func() {
 		logger.Info("Metrics server running")
 		if err := metrics.RunMetricServer(appCfg.PrometheusConfig.ServerConfig); err != nil {
-			logger.Fatal(err)
+			logger.Errorf("Shutting down, error while running metricsServer %v", err)
+			return
 		}
 	}()
 
@@ -75,13 +78,15 @@ func main() {
 	imagesService, err := service.NewImageService(logger.Logger,
 		appCfg.ImageStorageService.BasePictureUrl, appCfg.ImageStorageService.Addr, appCfg.ImageProcessingService.Addr, imagesEvents)
 	if err != nil {
-		logger.Fatalf("Shutting down, connection to the images services is not established: %s", err.Error())
+		logger.Errorf("Shutting down, connection to the images services is not established: %s", err.Error())
+		return
 	}
 
 	logger.Info("Database initializing")
 	moviesDatabase, err := repository.NewPostgreDB(appCfg.DBConfig)
 	if err != nil {
-		logger.Fatalf("Shutting down, connection to the database is not established: %s", err.Error())
+		logger.Errorf("Shutting down, connection to the database is not established: %s", err.Error())
+		return
 	}
 
 	moviesRepo := repository.NewMoviesRepository(moviesDatabase, logger.Logger)
@@ -89,14 +94,16 @@ func main() {
 
 	genresDatabase, err := repository.NewPostgreDB(appCfg.DBConfig)
 	if err != nil {
-		logger.Fatalf("Shutting down, connection to the database is not established: %s", err.Error())
+		logger.Errorf("Shutting down, connection to the database is not established: %s", err.Error())
+		return
 	}
 	genresRepo := repository.NewGenresRepository(genresDatabase, logger.Logger)
 	defer genresRepo.Shutdown()
 
 	countriesDatabase, err := repository.NewPostgreDB(appCfg.DBConfig)
 	if err != nil {
-		logger.Fatalf("Shutting down, connection to the database is not established: %s", err.Error())
+		logger.Errorf("Shutting down, connection to the database is not established: %s", err.Error())
+		return
 	}
 	countriesRepo := repository.NewCountriesRepository(countriesDatabase, logger.Logger)
 	defer countriesRepo.Shutdown()
@@ -107,13 +114,15 @@ func main() {
 	go func() {
 		logger.Info("Healthcheck server running")
 		if err := healthcheckManager.RunHealthcheckEndpoint(); err != nil {
-			logger.Fatalf("Shutting down, can't run healthcheck endpoint %s", err.Error())
+			logger.Errorf("Shutting down, can't run healthcheck endpoint %s", err.Error())
+			return
 		}
 	}()
 
 	checker, err := newExistanceChecker(countriesRepo, genresRepo)
 	if err != nil {
-		logger.Fatalf("Shutting down, connection to the persons service is not established: %s", err.Error())
+		logger.Errorf("Shutting down, connection to the persons service is not established: %s", err.Error())
+		return
 	}
 
 	manager := service.NewMoviesRepositoryWrapper(countriesRepo, genresRepo, moviesRepo, imagesService, convertPictureConfig(appCfg.PostersConfig),
@@ -199,6 +208,7 @@ func getListenServerConfig(cfg *config.Config) server.Config {
 	}
 }
 
-func newExistanceChecker(contriesRepo repository.CountriesRepository, genresRepo repository.GenresRepository) (service.ExistanceChecker, error) {
+func newExistanceChecker(contriesRepo repository.CountriesRepository,
+	genresRepo repository.GenresRepository) (service.ExistanceChecker, error) {
 	return service.NewExistanceChecker(contriesRepo, genresRepo, logging.GetLogger().Logger), nil
 }

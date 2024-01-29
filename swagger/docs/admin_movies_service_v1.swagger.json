@@ -24,40 +24,9 @@
     "application/json"
   ],
   "paths": {
-    "/v1/age-ratings": {
-      "get": {
-        "operationId": "moviesServiceV1_GetAgeRatings",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/admin_movies_serviceAgeRatings"
-            }
-          },
-          "404": {
-            "description": "Returned when the resource does not exist.",
-            "schema": {
-              "$ref": "#/definitions/rpcStatus"
-            }
-          },
-          "500": {
-            "description": "Something went wrong.",
-            "schema": {
-              "$ref": "#/definitions/rpcStatus"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/rpcStatus"
-            }
-          }
-        },
-        "tags": [
-          "moviesServiceV1"
-        ]
-      },
+    "/v1/age-rating": {
       "post": {
+        "summary": "Create age rating.",
         "operationId": "moviesServiceV1_CreateAgeRating",
         "responses": {
           "200": {
@@ -101,8 +70,44 @@
         ]
       }
     },
+    "/v1/age-ratings": {
+      "get": {
+        "summary": "Returns all age ratings.",
+        "operationId": "moviesServiceV1_GetAgeRatings",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/admin_movies_serviceAgeRatings"
+            }
+          },
+          "404": {
+            "description": "Returned when the resource does not exist.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          },
+          "500": {
+            "description": "Something went wrong.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "moviesServiceV1"
+        ]
+      }
+    },
     "/v1/age-ratings/{age_rating_name}": {
       "delete": {
+        "summary": "Delete age rating.",
         "operationId": "moviesServiceV1_DeleteAgeRating",
         "responses": {
           "200": {
@@ -146,6 +151,7 @@
     },
     "/v1/countries": {
       "get": {
+        "summary": "Returns all countries.",
         "operationId": "moviesServiceV1_GetCountries",
         "responses": {
           "200": {
@@ -180,6 +186,7 @@
     },
     "/v1/countries/exists": {
       "get": {
+        "summary": "Check countries existance, returns false and not exists ids, if any country in request doesn't exist.",
         "operationId": "moviesServiceV1_IsCountriesExists",
         "responses": {
           "200": {
@@ -222,7 +229,49 @@
       }
     },
     "/v1/country": {
+      "get": {
+        "summary": "Returns country with specified name.",
+        "operationId": "moviesServiceV1_GetCountryByName",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/admin_movies_serviceCountry"
+            }
+          },
+          "404": {
+            "description": "Returned when the resource does not exist.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          },
+          "500": {
+            "description": "Something went wrong.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "name",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "moviesServiceV1"
+        ]
+      },
       "post": {
+        "summary": "Create country.",
         "operationId": "moviesServiceV1_CreateCountry",
         "responses": {
           "200": {
@@ -265,50 +314,9 @@
         ]
       }
     },
-    "/v1/country/search": {
-      "get": {
-        "operationId": "moviesServiceV1_GetCountryByName",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/admin_movies_serviceCountry"
-            }
-          },
-          "404": {
-            "description": "Returned when the resource does not exist.",
-            "schema": {
-              "$ref": "#/definitions/rpcStatus"
-            }
-          },
-          "500": {
-            "description": "Something went wrong.",
-            "schema": {
-              "$ref": "#/definitions/rpcStatus"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/rpcStatus"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "name",
-            "in": "query",
-            "required": false,
-            "type": "string"
-          }
-        ],
-        "tags": [
-          "moviesServiceV1"
-        ]
-      }
-    },
     "/v1/country/{countryId}": {
       "get": {
+        "summary": "Returns county with specified id.",
         "operationId": "moviesServiceV1_GetCountry",
         "responses": {
           "200": {
@@ -350,6 +358,7 @@
         ]
       },
       "delete": {
+        "summary": "Delete country with specified id.",
         "operationId": "moviesServiceV1_DeleteCountry",
         "responses": {
           "200": {
@@ -394,6 +403,7 @@
     },
     "/v1/country/{country_id}": {
       "post": {
+        "summary": "Update country with specified id.",
         "operationId": "moviesServiceV1_UpdateCountry",
         "responses": {
           "200": {
@@ -451,6 +461,7 @@
     },
     "/v1/genre": {
       "get": {
+        "summary": "Returns genre with specified name.",
         "operationId": "moviesServiceV1_GetGenreByName",
         "responses": {
           "200": {
@@ -491,6 +502,7 @@
         ]
       },
       "post": {
+        "summary": "Create genre.",
         "operationId": "moviesServiceV1_CreateGenre",
         "responses": {
           "200": {
@@ -533,53 +545,9 @@
         ]
       }
     },
-    "/v1/genre/update": {
-      "post": {
-        "operationId": "moviesServiceV1_UpdateGenre",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "type": "object",
-              "properties": {}
-            }
-          },
-          "404": {
-            "description": "Returned when the resource does not exist.",
-            "schema": {
-              "$ref": "#/definitions/rpcStatus"
-            }
-          },
-          "500": {
-            "description": "Something went wrong.",
-            "schema": {
-              "$ref": "#/definitions/rpcStatus"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/rpcStatus"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/admin_movies_serviceUpdateGenreRequest"
-            }
-          }
-        ],
-        "tags": [
-          "moviesServiceV1"
-        ]
-      }
-    },
     "/v1/genre/{genreId}": {
       "get": {
+        "summary": "Returns genre with specified id.",
         "operationId": "moviesServiceV1_GetGenre",
         "responses": {
           "200": {
@@ -621,6 +589,7 @@
         ]
       },
       "delete": {
+        "summary": "Delete genre with specified id.",
         "operationId": "moviesServiceV1_DeleteGenre",
         "responses": {
           "200": {
@@ -663,8 +632,67 @@
         ]
       }
     },
+    "/v1/genre/{genre_id}": {
+      "post": {
+        "summary": "Update genre with specified id.",
+        "operationId": "moviesServiceV1_UpdateGenre",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "type": "object",
+              "properties": {}
+            }
+          },
+          "404": {
+            "description": "Returned when the resource does not exist.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          },
+          "500": {
+            "description": "Something went wrong.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "genre_id",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "tags": [
+          "moviesServiceV1"
+        ]
+      }
+    },
     "/v1/genres": {
       "get": {
+        "summary": "Returns all genres.",
         "operationId": "moviesServiceV1_GetGenres",
         "responses": {
           "200": {
@@ -699,6 +727,7 @@
     },
     "/v1/genres/exists": {
       "get": {
+        "summary": "Check genres existance, returns false and not exists ids, if any genre in request doesn't exist.",
         "operationId": "moviesServiceV1_IsGenresExists",
         "responses": {
           "200": {
@@ -916,6 +945,7 @@
         ]
       },
       "post": {
+        "summary": "Update movie fields.",
         "operationId": "moviesServiceV1_UpdateMovie",
         "responses": {
           "200": {
@@ -1014,7 +1044,7 @@
     },
     "/v1/movie/{movie_id}/exists": {
       "get": {
-        "summary": "Check movie existance, returns false, if movie doesn't exist",
+        "summary": "Check movie existance, returns false, if movie doesn't exist.",
         "operationId": "moviesServiceV1_IsMovieExists",
         "responses": {
           "200": {
@@ -1058,6 +1088,7 @@
     },
     "/v1/movie/{movie_id}/update-pictures": {
       "post": {
+        "summary": "Update movie pictures.",
         "operationId": "moviesServiceV1_UpdateMoviePictures",
         "responses": {
           "200": {
@@ -1518,18 +1549,6 @@
             "format": "int64"
           },
           "title": "key - movie id, value - duration"
-        }
-      }
-    },
-    "admin_movies_serviceUpdateGenreRequest": {
-      "type": "object",
-      "properties": {
-        "genre_id": {
-          "type": "integer",
-          "format": "int32"
-        },
-        "name": {
-          "type": "string"
         }
       }
     },

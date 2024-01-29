@@ -706,6 +706,23 @@ func request_MoviesServiceV1_UpdateGenre_0(ctx context.Context, marshaler runtim
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
+	var (
+		val string
+		ok  bool
+		err error
+		_   = err
+	)
+
+	val, ok = pathParams["GenreID"]
+	if !ok {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "GenreID")
+	}
+
+	protoReq.GenreID, err = runtime.Int32(val)
+	if err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "GenreID", err)
+	}
+
 	msg, err := client.UpdateGenre(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
 
@@ -721,6 +738,23 @@ func local_request_MoviesServiceV1_UpdateGenre_0(ctx context.Context, marshaler 
 	}
 	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq); err != nil && err != io.EOF {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+
+	var (
+		val string
+		ok  bool
+		err error
+		_   = err
+	)
+
+	val, ok = pathParams["GenreID"]
+	if !ok {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "GenreID")
+	}
+
+	protoReq.GenreID, err = runtime.Int32(val)
+	if err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "GenreID", err)
 	}
 
 	msg, err := server.UpdateGenre(ctx, &protoReq)
@@ -1376,7 +1410,7 @@ func RegisterMoviesServiceV1HandlerServer(ctx context.Context, mux *runtime.Serv
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/admin_movies_service.MoviesServiceV1/CreateAgeRating", runtime.WithHTTPPathPattern("/v1/age-ratings"))
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/admin_movies_service.MoviesServiceV1/CreateAgeRating", runtime.WithHTTPPathPattern("/v1/age-rating"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1526,7 +1560,7 @@ func RegisterMoviesServiceV1HandlerServer(ctx context.Context, mux *runtime.Serv
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/admin_movies_service.MoviesServiceV1/UpdateGenre", runtime.WithHTTPPathPattern("/v1/genre/update"))
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/admin_movies_service.MoviesServiceV1/UpdateGenre", runtime.WithHTTPPathPattern("/v1/genre/{GenreID}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1626,7 +1660,7 @@ func RegisterMoviesServiceV1HandlerServer(ctx context.Context, mux *runtime.Serv
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/admin_movies_service.MoviesServiceV1/GetCountryByName", runtime.WithHTTPPathPattern("/v1/country/search"))
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/admin_movies_service.MoviesServiceV1/GetCountryByName", runtime.WithHTTPPathPattern("/v1/country"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -2035,7 +2069,7 @@ func RegisterMoviesServiceV1HandlerClient(ctx context.Context, mux *runtime.Serv
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/admin_movies_service.MoviesServiceV1/CreateAgeRating", runtime.WithHTTPPathPattern("/v1/age-ratings"))
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/admin_movies_service.MoviesServiceV1/CreateAgeRating", runtime.WithHTTPPathPattern("/v1/age-rating"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -2167,7 +2201,7 @@ func RegisterMoviesServiceV1HandlerClient(ctx context.Context, mux *runtime.Serv
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/admin_movies_service.MoviesServiceV1/UpdateGenre", runtime.WithHTTPPathPattern("/v1/genre/update"))
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/admin_movies_service.MoviesServiceV1/UpdateGenre", runtime.WithHTTPPathPattern("/v1/genre/{GenreID}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -2255,7 +2289,7 @@ func RegisterMoviesServiceV1HandlerClient(ctx context.Context, mux *runtime.Serv
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/admin_movies_service.MoviesServiceV1/GetCountryByName", runtime.WithHTTPPathPattern("/v1/country/search"))
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/admin_movies_service.MoviesServiceV1/GetCountryByName", runtime.WithHTTPPathPattern("/v1/country"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -2405,7 +2439,7 @@ var (
 
 	pattern_MoviesServiceV1_GetAgeRatings_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"v1", "age-ratings"}, ""))
 
-	pattern_MoviesServiceV1_CreateAgeRating_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"v1", "age-ratings"}, ""))
+	pattern_MoviesServiceV1_CreateAgeRating_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"v1", "age-rating"}, ""))
 
 	pattern_MoviesServiceV1_DeleteAgeRating_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2}, []string{"v1", "age-ratings", "AgeRatingName"}, ""))
 
@@ -2417,7 +2451,7 @@ var (
 
 	pattern_MoviesServiceV1_GetGenres_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"v1", "genres"}, ""))
 
-	pattern_MoviesServiceV1_UpdateGenre_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"v1", "genre", "update"}, ""))
+	pattern_MoviesServiceV1_UpdateGenre_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2}, []string{"v1", "genre", "GenreID"}, ""))
 
 	pattern_MoviesServiceV1_DeleteGenre_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2}, []string{"v1", "genre", "genre_id"}, ""))
 
@@ -2425,7 +2459,7 @@ var (
 
 	pattern_MoviesServiceV1_GetCountry_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2}, []string{"v1", "country", "country_id"}, ""))
 
-	pattern_MoviesServiceV1_GetCountryByName_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"v1", "country", "search"}, ""))
+	pattern_MoviesServiceV1_GetCountryByName_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"v1", "country"}, ""))
 
 	pattern_MoviesServiceV1_CreateCountry_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"v1", "country"}, ""))
 

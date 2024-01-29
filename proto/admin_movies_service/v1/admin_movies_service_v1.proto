@@ -91,20 +91,22 @@ service moviesServiceV1 {
         };
     }
 
-    // Check movie existance, returns false, if movie doesn't exist
+    // Check movie existance, returns false, if movie doesn't exist.
     rpc IsMovieExists(IsMovieExistsRequest) returns(IsMovieExistsResponce) {
         option (google.api.http) = {
             get: "/v1/movie/{movieID}/exists"
         };
     }
 
+    // Update movie fields.
     rpc UpdateMovie(UpdateMovieRequest) returns(google.protobuf.Empty) {
         option (google.api.http) = {
             post: "/v1/movie/{movieID}"
             body:"*"
         };
     }
-    
+
+    // Update movie pictures.
     rpc UpdateMoviePictures(UpdateMoviePicturesRequest) returns(google.protobuf.Empty) {
         option (google.api.http) = {
             post: "/v1/movie/{movieID}/update-pictures"
@@ -112,38 +114,43 @@ service moviesServiceV1 {
         };
     }
 
+    // Returns all age ratings.
     rpc GetAgeRatings(google.protobuf.Empty) returns(AgeRatings){
         option (google.api.http) = {
             get: "/v1/age-ratings"
         };
     }
 
+    // Create age rating. 
     rpc CreateAgeRating(CreateAgeRatingRequest) returns(google.protobuf.Empty){
         option (google.api.http) = {
-            post: "/v1/age-ratings"
+            post: "/v1/age-rating"
             body: "*"
         };
     }
 
+    // Delete age rating. 
     rpc DeleteAgeRating(DeleteAgeRatingRequest) returns(google.protobuf.Empty){
         option (google.api.http) = {
             delete: "/v1/age-ratings/{AgeRatingName}"
         };
     }
 
+    // Returns genre with specified id.
     rpc GetGenre(GetGenreRequest) returns(Genre) {
         option (google.api.http) = {
             get: "/v1/genre/{genre_id}"
         };
-      }
-    
+    }
+
+    // Returns genre with specified name.
     rpc GetGenreByName(GetGenreByNameRequest) returns(Genre) {
         option (google.api.http) = {
             get: "/v1/genre"
         };
     }
       
-    
+    // Create genre. 
     rpc CreateGenre(CreateGenreRequest) returns(CreateGenreResponce) {
         option (google.api.http) = {
             post: "/v1/genre"
@@ -151,45 +158,50 @@ service moviesServiceV1 {
         };
     }
     
-
+    // Returns all genres.
     rpc GetGenres(google.protobuf.Empty) returns(Genres) {
         option (google.api.http) = {
             get: "/v1/genres"
         };
     }
 
+    // Update genre with specified id.
     rpc UpdateGenre(UpdateGenreRequest) returns(google.protobuf.Empty) {
         option (google.api.http) = {
-            post: "/v1/genre/update"
+            post: "/v1/genre/{GenreID}"
             body: "*"
         };
     }
     
-
+    // Delete genre with specified id.
     rpc DeleteGenre(DeleteGenreRequest) returns(google.protobuf.Empty) {
         option (google.api.http) = {
             delete: "/v1/genre/{genre_id}"
         };
     }
     
+    // Check genres existance, returns false and not exists ids, if any genre in request doesn't exist.
     rpc IsGenresExists(IsGenresExistsRequest) returns(ExistsResponce) {
         option (google.api.http) = {
             get: "/v1/genres/exists"
         };
     }
 
+    // Returns county with specified id.
     rpc GetCountry(GetCountryRequest) returns(Country) {
         option (google.api.http) = {
             get: "/v1/country/{country_id}"
         };
-      }
+    }
 
+    // Returns country with specified name.
     rpc GetCountryByName(GetCountryByNameRequest) returns(Country) {
         option (google.api.http) = {
-            get: "/v1/country/search"
+            get: "/v1/country"
         };
     }
-      
+
+    // Create country.
     rpc CreateCountry(CreateCountryRequest) returns(CreateCountryResponce) {
         option (google.api.http) = {
             post: "/v1/country"
@@ -197,12 +209,14 @@ service moviesServiceV1 {
         };
     }
 
+    // Returns all countries.
     rpc GetCountries(google.protobuf.Empty) returns(Countries) {
         option (google.api.http) = {
             get: "/v1/countries"
         };
     }
 
+    // Update country with specified id.
     rpc UpdateCountry(UpdateCountryRequest) returns(google.protobuf.Empty) {
         option (google.api.http) = {
             post: "/v1/country/{countryID}"
@@ -210,15 +224,17 @@ service moviesServiceV1 {
         };
     }
 
+    // Delete country with specified id.
     rpc DeleteCountry(DeleteCountryRequest) returns(google.protobuf.Empty) {
         option (google.api.http) = {
             delete: "/v1/country/{country_id}"
         };
     }
-    
+
+    // Check countries existance, returns false and not exists ids, if any country in request doesn't exist.
     rpc IsCountriesExists(IsCountriesExistsRequest) returns(ExistsResponce) {
         option (google.api.http) = {
           get: "/v1/countries/exists"
         };
-    } 
+    }
 }
