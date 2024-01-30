@@ -19,12 +19,19 @@ import (
 )
 
 type imagesService struct {
-	logger           *logrus.Logger
-	errorHandler     errorHandler
-	processingClient image_processing_service.ImageProcessingServiceV1Client
-	storage          images_storage_service.ImagesStorageServiceV1Client
-	imagesMQ         events.ImagesEventsMQ
-	basePhotoUrl     string
+	logger               *logrus.Logger
+	errorHandler         errorHandler
+	processingClient     image_processing_service.ImageProcessingServiceV1Client
+	storage              images_storage_service.ImagesStorageServiceV1Client
+	storageConn          *grpc.ClientConn
+	processingClientConn *grpc.ClientConn
+	imagesMQ             events.ImagesEventsMQ
+	basePhotoUrl         string
+}
+
+func (s *imagesService) Shutdown() {
+	s.storageConn.Close()
+	s.processingClientConn.Close()
 }
 
 func NewImageService(logger *logrus.Logger,
@@ -44,12 +51,14 @@ func NewImageService(logger *logrus.Logger,
 	storage := images_storage_service.NewImagesStorageServiceV1Client(storageConn)
 
 	return &imagesService{
-		logger:           logger,
-		errorHandler:     errorHandler,
-		basePhotoUrl:     basePhotoUrl,
-		processingClient: processingClient,
-		storage:          storage,
-		imagesMQ:         imagesMQ,
+		logger:               logger,
+		errorHandler:         errorHandler,
+		basePhotoUrl:         basePhotoUrl,
+		processingClient:     processingClient,
+		processingClientConn: processingClientConn,
+		storage:              storage,
+		imagesMQ:             imagesMQ,
+		storageConn:          storageConn,
 	}, nil
 }
 
@@ -61,6 +70,7 @@ type CheckImageConfig struct {
 	AllowedTypes   []string
 }
 
+// Returns ref to the int var if var>0, othervise returns nil.
 func getIntRef(i int32) *int32 {
 	if i <= 0 {
 		return nil
