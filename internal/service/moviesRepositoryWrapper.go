@@ -448,13 +448,14 @@ func (s *moviesRepositoryWrapper) CreateMovie(ctx context.Context,
 	if err != nil {
 		ext.LogError(span, err)
 		span.SetTag("grpc.status", status.Code(err))
-		for key, id := range ids {
-			err := s.imagesService.DeletePicture(ctx, uploadParams[key].Category, id)
-			if err != nil {
-				s.logger.Errorf("image with %s id not deleted err: %s", id, err.Error())
+		go func() {
+			for key, id := range ids {
+				err := s.imagesService.DeletePicture(context.Background(), uploadParams[key].Category, id)
+				if err != nil {
+					s.logger.Errorf("image with %s id not deleted err: %s", id, err.Error())
+				}
 			}
-		}
-
+		}()
 		return nil, err
 	}
 

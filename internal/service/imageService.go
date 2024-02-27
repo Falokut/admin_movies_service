@@ -282,20 +282,18 @@ func (s *imagesService) UploadPictures(ctx context.Context,
 
 	go func() {
 		wg.Wait()
-		s.logger.Debug("channel closed")
 		close(resCh)
 	}()
 
 	var images = make(map[string]string, 3)
 	for res := range resCh {
 		if res.err != nil {
-			return map[string]string{}, res.err
+			return images, res.err
 		}
 		if res.id == "" {
 			continue
 		}
 		images[res.key] = res.id
-		s.logger.Debug("Uploading pictures loop")
 	}
 
 	s.logger.Info("Uploading pictures success")
@@ -407,7 +405,6 @@ func (s *imagesService) ReplacePictures(ctx context.Context,
 
 	go func() {
 		wg.Wait()
-		s.logger.Debug("channel closed")
 		close(resCh)
 	}()
 
@@ -420,9 +417,7 @@ func (s *imagesService) ReplacePictures(ctx context.Context,
 			continue
 		}
 		images[res.key] = res.id
-		s.logger.Debug("Uploading pictures loop")
 	}
 
-	s.logger.Info("Uploading pictures success")
 	return images, nil
 }
