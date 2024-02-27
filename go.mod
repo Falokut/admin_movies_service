@@ -5,8 +5,6 @@ go 1.21.5
 require (
 	github.com/Falokut/grpc_errors v1.0.0
 	github.com/Falokut/healthcheck v0.0.0-20231124155013-bff54f9bc002
-	github.com/Falokut/image_processing_service v0.0.0-20240102100934-b53efa300926
-	github.com/Falokut/images_storage_service v0.0.0-20240127065239-2e3afcadcdc9
 	github.com/Falokut/online_cinema_ticket_office.loggerwrapper v0.0.0-20231130151717-09aa21496f83
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.19.1
 	github.com/ilyakaznacheev/cleanenv v1.5.0
@@ -26,7 +24,11 @@ require go.uber.org/goleak v1.3.0
 
 require github.com/zhashkevych/go-sqlxmock v1.5.1
 
-require github.com/Falokut/grpc_rest_server v1.0.7
+require (
+	github.com/Falokut/grpc_rest_server v1.0.7
+	github.com/Falokut/image_processing_service v0.0.0-20240102100934-b53efa300926
+	github.com/Falokut/images_storage_service v0.0.0-20240202173512-2f2a008cd5b5
+)
 
 require (
 	github.com/davecgh/go-spew v1.1.1 // indirect
@@ -37,7 +39,6 @@ require (
 	github.com/golang/protobuf v1.5.3 // indirect
 	github.com/klauspost/compress v1.17.5 // indirect
 	github.com/kr/text v0.2.0 // indirect
-	github.com/matttproud/golang_protobuf_extensions/v2 v2.0.0 // indirect
 	github.com/pierrec/lz4/v4 v4.1.21 // indirect
 )
 

@@ -77,7 +77,8 @@ func main() {
 	defer imagesEvents.Shutdown()
 
 	imagesService, err := service.NewImageService(logger.Logger,
-		cfg.ImageStorageService.BasePictureUrl, cfg.ImageStorageService.Addr, cfg.ImageProcessingService.Addr, imagesEvents)
+		cfg.ImageStorageService.BasePictureUrl, cfg.ImageStorageService.Addr, cfg.ImageProcessingService.Addr,
+		cfg.ImageProcessingService.SecureConfig, cfg.ImageStorageService.SecureConfig, imagesEvents)
 	if err != nil {
 		logger.Errorf("Shutting down, connection to the images services is not established: %s", err.Error())
 		return

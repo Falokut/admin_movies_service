@@ -4,6 +4,7 @@ import (
 	"context"
 	"sync"
 
+	"github.com/Falokut/admin_movies_service/internal/config"
 	"github.com/Falokut/admin_movies_service/internal/events"
 	image_processing_service "github.com/Falokut/image_processing_service/pkg/image_processing_service/v1/protos"
 	images_storage_service "github.com/Falokut/images_storage_service/pkg/images_storage_service/v1/protos"
@@ -12,7 +13,6 @@ import (
 	"github.com/opentracing/opentracing-go/ext"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/credentials/insecure"
 	"google.golang.org/grpc/status"
 
 	"github.com/sirupsen/logrus"
@@ -36,15 +36,16 @@ func (s *imagesService) Shutdown() {
 
 func NewImageService(logger *logrus.Logger,
 	basePhotoUrl, storageAddr, imageProcessingAddr string,
+	imageProcessingSecureCfg, storageSecureCfg config.ConnectionSecureConfig,
 	imagesMQ events.ImagesEventsMQ) (*imagesService, error) {
 	errorHandler := newErrorHandler(logger)
-	processingClientConn, err := getGrpcConnection(imageProcessingAddr)
+	processingClientConn, err := getGrpcConnection(imageProcessingAddr, imageProcessingSecureCfg)
 	if err != nil {
 		return nil, err
 	}
 	processingClient := image_processing_service.NewImageProcessingServiceV1Client(processingClientConn)
 
-	storageConn, err := getGrpcConnection(storageAddr)
+	storageConn, err := getGrpcConnection(storageAddr, storageSecureCfg)
 	if err != nil {
 		return nil, err
 	}
@@ -217,7 +218,7 @@ func (s *imagesService) checkImage(ctx context.Context, image []byte, cfg CheckI
 func (s *imagesService) DeletePicture(ctx context.Context, category, id string) error {
 	_, err := s.storage.DeleteImage(ctx,
 		&images_storage_service.ImageRequest{ImageId: id, Category: category})
-	if status.Code(err) != codes.NotFound {
+	if status.Code(err) == codes.NotFound {
 		return nil
 	}
 	if err != nil {
@@ -301,14 +302,22 @@ func (s *imagesService) UploadPictures(ctx context.Context,
 	return images, nil
 }
 
-func getGrpcConnection(addr string) (*grpc.ClientConn, error) {
-	return grpc.Dial(addr,
-		grpc.WithTransportCredentials(insecure.NewCredentials()),
+func getGrpcConnection(addr string, secureConfig config.ConnectionSecureConfig) (*grpc.ClientConn, error) {
+	creds, err := secureConfig.GetGrpcTransportCredentials()
+	if err != nil {
+		return nil, err
+	}
+	conn, err := grpc.Dial(addr, creds,
 		grpc.WithUnaryInterceptor(
 			otgrpc.OpenTracingClientInterceptor(opentracing.GlobalTracer())),
 		grpc.WithStreamInterceptor(
 			otgrpc.OpenTracingStreamClientInterceptor(opentracing.GlobalTracer())),
 	)
+	if err != nil {
+		return nil, err
+	}
+
+	return conn, nil
 }
 
 func (s *imagesService) ReplacePicture(ctx context.Context, picture ReplacePicturesParam, createIfNotExist bool) (string, error) {
@@ -354,7 +363,7 @@ func (s *imagesService) ReplacePicture(ctx context.Context, picture ReplacePictu
 
 func (s *imagesService) ReplacePictures(ctx context.Context,
 	pictures map[string]ReplacePicturesParam) (map[string]string, error) {
-	span, ctx := opentracing.StartSpanFromContext(ctx, "imagesService.UploadPictures")
+	span, ctx := opentracing.StartSpanFromContext(ctx, "imagesService.ReplacePictures")
 	defer span.Finish()
 	var wg sync.WaitGroup
 
