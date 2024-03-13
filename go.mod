@@ -17,7 +17,7 @@ require (
 	github.com/uber/jaeger-client-go v2.30.0+incompatible
 	google.golang.org/genproto/googleapis/api v0.0.0-20240125205218-1f4bbc51befe
 	google.golang.org/grpc v1.61.0
-	google.golang.org/protobuf v1.32.0
+	google.golang.org/protobuf v1.33.0
 )
 
 require go.uber.org/goleak v1.3.0
