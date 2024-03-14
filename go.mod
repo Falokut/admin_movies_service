@@ -8,7 +8,7 @@ require (
 	github.com/Falokut/online_cinema_ticket_office.loggerwrapper v0.0.0-20231130151717-09aa21496f83
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.19.1
 	github.com/ilyakaznacheev/cleanenv v1.5.0
-	github.com/jackc/pgx/v5 v5.5.2
+	github.com/jackc/pgx/v5 v5.5.4
 	github.com/jmoiron/sqlx v1.3.5
 	github.com/opentracing/opentracing-go v1.2.0
 	github.com/prometheus/client_golang v1.18.0
@@ -17,7 +17,7 @@ require (
 	github.com/uber/jaeger-client-go v2.30.0+incompatible
 	google.golang.org/genproto/googleapis/api v0.0.0-20240125205218-1f4bbc51befe
 	google.golang.org/grpc v1.61.0
-	google.golang.org/protobuf v1.32.0
+	google.golang.org/protobuf v1.33.0
 )
 
 require go.uber.org/goleak v1.3.0
